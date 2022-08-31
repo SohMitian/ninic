@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="icon" href="img/icon.jpg">
+  <link rel="apple-touch-icon" href="img/icon.jpg">
+  <link rel="stylesheet" href="src/css/style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+  <title>ninic（ニニック）</title>
+
+</head>
+
+<body>
+  <!-- As a heading -->
+  <nav class="navbar navbar-light mb-3" style="background-color: #a3d7fd;">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">ninicβ</span>
+    </div>
+  </nav>
+  <div class="container">
+    <header class="header text-center">
+      <div class="h1">ninicβ）</div>
+      <p>ninic（ニニック）はAIを活用して描き手の個性が反映されたイラストメーカーを自動作成できるサービスです。<br>
+        10枚以上のイラストがあれば、あなただけのイラストメーカーを作ることが出来ます。</p>
+      <p class="text-muted">利用にあたって運営者は一切の責任を負いません。自由に使ってください。<br>
+        誰がなんの画像を入力したかも保存しません。したがって完全匿名で利用できます。
+      </p>
+    </header>
+    <main role="main">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <img class="img-fluid mb-5" id="sampleImage" src="./img/image.png" alt="sample" />
+          <div class="h4 mb-4">イラストを複数選択</div>
+          <div class="mb-5">
+            <input type="file" id="icon" name="icon" accept="image/*" multiple>
+          </div>
+          <div>
+            <div id="preview" style="display:none"></div>
+          </div>
+          <!-- 画像生成エリア -->
+          <br>
+          <div id="imageGenerate">
+            <button class="btn btn-primary mb-2" id="fileCheckBtn" type="button" onclick="clickBtn1()">学習開始！
+            </button>
+          </div>
+          <div>
+            <div class="row justify-content-center">
+              <div class="col-md-6 text-center">
+                <div id="gen">
+                  <img class="img-fluid mb-5 img-fluid" id="sampleImage" src="./img/gakusyu.png" />
+                  <h5 id="people"></h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          </form>
+        </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <!-- <p class="text-muted">©ninic</p> -->
+      運営者
+      <a href="https://twitter.com/soh_mitian" target="_blank">
+        @soh_mitian
+      </a>
+      /
+      <a href="https://marshmallow-qa.com/soh_0001?utm_medium=url_text&utm_source=promotion" target="_blank">質問や要望</a>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+    integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script>
+    $(function () {
+      $('#icon').change(function () {
+        if (!this.files.length) {
+          return;
+        }
+        $('#preview').text('');
+
+        var $files = $(this).prop('files');
+        var len = $files.length;
+        for (var i = 0; i < len; i++) {
+          var file = $files[i];
+          var fr = new FileReader();
+
+          fr.onload = function (e) {
+            var src = e.target.result;
+            var img = '<img src="' + src + '" class="img-thumbnail">';
+            $('#preview').append(img);
+          }
+
+          fr.readAsDataURL(file);
+        }
+
+        $('#preview').css('display', 'block');
+      });
+    });
+  </script>
+  <script>
+    //初期表示は非表示
+    document.getElementById("gen").style.display = "none";
+
+    function clickBtn1() {
+      var min = 20000;
+      var max = 50000;
+
+      var a = Math.floor(Math.random() * (max + 1 - min)) + min;
+
+      const p1 = document.getElementById("gen");
+      const p2 = document.getElementById("people")
+
+      if (p1.style.display == "block") {
+        // noneで非表示
+        p1.style.display = "none";
+      } else {
+        // blockで表示
+        p2.textContent = '学習待ち人数 ' + a + '人'
+        p1.style.display = "block";
+      }
+    }
+  </script>
+
+  <script>
+    $(function () {
+
+      //ファイルチェック
+      function inputCheck() {
+
+        //inputフィールドの文字数を取得
+        fileCheck = $("#icon").val().length;
+
+        //値が無ければボタンを非表示
+        if (fileCheck == 0) {
+          $("#fileCheckBtn").attr("disabled", "disabled");
+        } else {
+          $("#fileCheckBtn").attr("disabled", false);
+        }
+      }
+
+      //フォームの中身を検証
+      inputCheck();
+
+      //inputフィールドの値が変わったら
+      $("#icon").change(function () {
+        inputCheck();
+      });
+
+    });
+  </script>
+
+  <style>
+    .footer {
+      bottom: 0;
+      width: 100%;
+      /* Set the fixed height of the footer here */
+      height: 60px;
+      background-color: #f5f5f5;
+    }
+
+    body>.container {
+      padding: 60px 15px 0;
+    }
+
+    .container .text-muted {
+      margin: 20px 0;
+    }
+
+    .footer>.container {
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+  </style>
+</body>
+
+</html>
